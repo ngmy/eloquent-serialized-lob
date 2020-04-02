@@ -1,20 +1,25 @@
 <?php
 
-namespace Ngmy\EloquentSerializedLob\Tests\Serializer;
+declare(strict_types=1);
 
+namespace Ngmy\EloquentSerializedLob\Tests\Serializers;
+
+use Ngmy\EloquentSerializedLob\Serializers\JsonSerializer;
+use Ngmy\EloquentSerializedLob\Tests\SampleProjects\IssueDatabase\Entities\Bug;
 use Ngmy\EloquentSerializedLob\Tests\TestCase;
-use Ngmy\EloquentSerializedLob\Tests\Fixtures\Entities\Bug;
-use Ngmy\EloquentSerializedLob\Serializer\JsonSerializer;
 
 class JsonSerializerTest extends TestCase
 {
-    public function test_Should_SerializeGivenObjectToJsonFormattedString()
+    /**
+     * @return void
+     */
+    public function testShouldSerializeGivenObjectToJsonFormattedString(): void
     {
-        $inputBug = new Bug;
+        $inputBug = new Bug();
         $inputBug->setSeverity('loss of functionality');
         $inputBug->setVersionAffected('1.0');
 
-        $serializer = new JsonSerializer;
+        $serializer = $this->app->make(JsonSerializer::class);
         $actualBugJson = $serializer->serialize($inputBug);
 
         $expectedBugJson = <<<EOF
@@ -24,16 +29,19 @@ EOF;
         $this->assertEquals($expectedBugJson, $actualBugJson);
     }
 
-    public function test_Should_DeserializeGivenJsonFormattedStringToObject()
+    /**
+     * @return void
+     */
+    public function testShouldDeserializeGivenJsonFormattedStringToObject(): void
     {
         $inputBugJson = <<<EOF
 {"severity":"loss of functionality","version_affected":"1.0"}
 EOF;
 
-        $serializer = new JsonSerializer;
+        $serializer = $this->app->make(JsonSerializer::class);
         $actualBug = $serializer->deserialize($inputBugJson, Bug::class);
 
-        $expectedBug = new Bug;
+        $expectedBug = new Bug();
         $expectedBug->setSeverity('loss of functionality');
         $expectedBug->setVersionAffected('1.0');
 

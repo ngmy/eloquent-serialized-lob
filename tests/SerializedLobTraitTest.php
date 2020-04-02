@@ -1,40 +1,68 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ngmy\EloquentSerializedLob\Tests;
 
-use Ngmy\EloquentSerializedLob\Tests\TestCase;
-use Ngmy\EloquentSerializedLob\Tests\Fixtures\Entities\Bug;
-use Ngmy\EloquentSerializedLob\Tests\Fixtures\Entities\Department;
-use Ngmy\EloquentSerializedLob\Tests\Fixtures\Entities\FeatureRequest;
-use Ngmy\EloquentSerializedLob\Tests\Fixtures\Models\Customer;
-use Ngmy\EloquentSerializedLob\Tests\Fixtures\Models\Issue;
-use Illuminate\Database\Schema\Query;
+use DB;
+use Illuminate\Testing\PendingCommand;
+use Ngmy\EloquentSerializedLob\Tests\SampleProjects\IssueDatabase\{
+    Entities\Bug,
+    Entities\FeatureRequest,
+    Models\Issue,
+};
+use Ngmy\EloquentSerializedLob\Tests\SampleProjects\OrganizationHierarchy\{
+    Entities\Department,
+    Models\Customer,
+};
 
 class SerializedLobTraitTest extends TestCase
 {
-    protected $useDatabase = true;
-
-    public function test_Should_SetSerializationOfAttribute_When_StoringGraphOfObjectsInOneTable()
+    /**
+     * @return void
+     * @doesNotPerformAssertions
+     */
+    public function testGenerateModelPhpDocComment(): void
     {
-        $area = new Department;
+        $command = $this->artisan('ide-helper:models', [
+            '--write' => true,
+            '--dir' => [
+                '../../../../tests/SampleProjects/issue_database/Models',
+                '../../../../tests/SampleProjects/organization_hierarchy/Models',
+            ],
+        ]);
+
+        assert($command instanceof PendingCommand);
+
+        $command->run();
+    }
+
+    /**
+     * @return void
+     */
+    public function testShouldSetSerializationOfAttributeWhenStoringGraphOfObjectsInOneTable(): void
+    {
+        $area = new Department();
         $area->setName('area');
 
-        $area1 = new Department;
+        $area1 = new Department();
         $area1->setName('area1');
 
-        $area1_1 = new Department;
+        $area1_1 = new Department();
         $area1_1->setName('area1_1');
 
-        $area1->addSubsidiaries($area1_1);
-        $area->addSubsidiaries($area1);
+        $area1->addSubsidiary($area1_1);
+        $area->addSubsidiary($area1);
 
-        $customer = new Customer;
+        $customer = new Customer();
         $customer->name = 'Customer';
         $customer->departments = $area;
 
         $customer->save();
 
-        $createdCustomer = $this->db->table('customers')->where('id', 1)->first();
+        $createdCustomer = DB::table('customers')->where('id', 1)->first();
+
+        assert(!is_null($createdCustomer));
 
         $expectedDepartmentsXml = <<<EOF
 <?xml version="1.0" encoding="UTF-8"?>
@@ -58,7 +86,10 @@ EOF;
         $this->assertEquals($expectedDepartmentsXml, $createdCustomer->departments);
     }
 
-    public function test_Should_GetDeserializationOfAttribute_When_StoringGraphOfObjectsInOneTable()
+    /**
+     * @return void
+     */
+    public function testShouldGetDeserializationOfAttributeWhenStoringGraphOfObjectsInOneTable(): void
     {
         $departmentsXml = <<<EOF
 <?xml version="1.0" encoding="UTF-8"?>
@@ -78,27 +109,37 @@ EOF;
 
 EOF;
 
-        $this->db->table('customers')->insert([
+        DB::table('customers')->insert([
             'name' => 'Customer',
             'departments' => $departmentsXml,
         ]);
 
         $readCustomer = Customer::find(1);
 
+        assert(!is_null($readCustomer));
+        assert(isset($readCustomer->departments->getSubsidiaries()[0]));
+        assert(isset($readCustomer->departments->getSubsidiaries()[0]->getSubsidiaries()[0]));
+
         $this->assertEquals('Customer', $readCustomer->name);
         $this->assertEquals('area', $readCustomer->departments->getName());
         $this->assertEquals('area1', $readCustomer->departments->getSubsidiaries()[0]->getName());
-        $this->assertEquals('area1_1', $readCustomer->departments->getSubsidiaries()[0]->getSubsidiaries()[0]->getName());
+        $this->assertEquals(
+            'area1_1',
+            $readCustomer->departments->getSubsidiaries()[0]->getSubsidiaries()[0]->getName()
+        );
     }
 
-    public function test_Should_SetSerializationOfAttribute_When_StoringSubtypesOfObjectInOneTable()
+    /**
+     * @return void
+     */
+    public function testShouldSetSerializationOfAttributeWhenStoringSubtypesOfObjectInOneTable(): void
     {
         // issue_type is 'bug'.
-        $bug = new Bug;
+        $bug = new Bug();
         $bug->setSeverity('loss of functionality');
         $bug->setVersionAffected('1.0');
 
-        $issueBug = new Issue;
+        $issueBug = new Issue();
         $issueBug->reported_by = 1;
         $issueBug->product_id = 1;
         $issueBug->priority = 'high';
@@ -110,10 +151,10 @@ EOF;
         $issueBug->save();
 
         // issue_type is 'feature'.
-        $featureRequest = new FeatureRequest;
+        $featureRequest = new FeatureRequest();
         $featureRequest->setSponsor('Sponsor');
 
-        $issueFeature = new Issue;
+        $issueFeature = new Issue();
         $issueFeature->reported_by = 1;
         $issueFeature->product_id = 1;
         $issueFeature->priority = 'high';
@@ -124,8 +165,11 @@ EOF;
 
         $issueFeature->save();
 
-        $createdIssueTypeBug = $this->db->table('issues')->where('id', 1)->first();
-        $createdIssueTypeFeature = $this->db->table('issues')->where('id', 2)->first();
+        $createdIssueTypeBug = DB::table('issues')->where('id', 1)->first();
+        $createdIssueTypeFeature = DB::table('issues')->where('id', 2)->first();
+
+        assert(!is_null($createdIssueTypeBug));
+        assert(!is_null($createdIssueTypeFeature));
 
         $this->assertEquals(1, $createdIssueTypeBug->reported_by);
         $this->assertEquals(1, $createdIssueTypeBug->product_id);
@@ -133,7 +177,10 @@ EOF;
         $this->assertEquals(null, $createdIssueTypeBug->version_resolved);
         $this->assertEquals('new', $createdIssueTypeBug->status);
         $this->assertEquals('bug', $createdIssueTypeBug->issue_type);
-        $this->assertEquals('{"severity":"loss of functionality","version_affected":"1.0"}', $createdIssueTypeBug->attributes);
+        $this->assertEquals(
+            '{"severity":"loss of functionality","version_affected":"1.0"}',
+            $createdIssueTypeBug->attributes
+        );
 
         $this->assertEquals(1, $createdIssueTypeFeature->reported_by);
         $this->assertEquals(1, $createdIssueTypeFeature->product_id);
@@ -144,10 +191,13 @@ EOF;
         $this->assertEquals('{"sponsor":"Sponsor"}', $createdIssueTypeFeature->attributes);
     }
 
-    public function test_Should_GetDeserializationOfAttribute_When_StoringSubtypesOfObjectInOneTable()
+    /**
+     * @return void
+     */
+    public function testShouldGetDeserializationOfAttributeWhenStoringSubtypesOfObjectInOneTable(): void
     {
         // issue_type is 'bug'.
-        $this->db->table('issues')->insert([
+        DB::table('issues')->insert([
             'reported_by' => 1,
             'product_id' => 1,
             'priority' => 'high',
@@ -158,7 +208,7 @@ EOF;
         ]);
 
         // issue_type is 'feature'.
-        $this->db->table('issues')->insert([
+        DB::table('issues')->insert([
             'reported_by' => 1,
             'product_id' => 1,
             'priority' => 'high',
@@ -169,7 +219,7 @@ EOF;
         ]);
 
         // issue_type is an unexpected value.
-        $this->db->table('issues')->insert([
+        DB::table('issues')->insert([
             'reported_by' => 1,
             'product_id' => 1,
             'priority' => 'high',
@@ -180,7 +230,7 @@ EOF;
         ]);
 
         // issue_type is null.
-        $this->db->table('issues')->insert([
+        DB::table('issues')->insert([
             'reported_by' => 1,
             'product_id' => 1,
             'priority' => 'high',
@@ -194,6 +244,15 @@ EOF;
         $readIssueTypeFeature = Issue::find(2);
         $readIssueTypeUnexpected = Issue::find(3);
         $readIssueTypeNull = Issue::find(4);
+
+        assert(!is_null($readIssueTypeBug));
+        assert(!is_null($readIssueTypeFeature));
+        assert(!is_null($readIssueTypeUnexpected));
+        assert(!is_null($readIssueTypeNull));
+        assert($readIssueTypeBug->attributes instanceof Bug);
+        assert($readIssueTypeFeature->attributes instanceof FeatureRequest);
+        assert(is_array($readIssueTypeUnexpected->attributes));
+        assert(is_array($readIssueTypeNull->attributes));
 
         $this->assertEquals(1, $readIssueTypeBug->reported_by);
         $this->assertEquals(1, $readIssueTypeBug->product_id);

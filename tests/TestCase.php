@@ -1,65 +1,49 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ngmy\EloquentSerializedLob\Tests;
 
-use Orchestra\Testbench\TestCase as OrchestraTestCase;
+use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
 use Illuminate\Database\DatabaseManager;
+use Ngmy\EloquentSerializedLob\EloquentSerializedLobServiceProvider;
+use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
 abstract class TestCase extends OrchestraTestCase
 {
-    protected $useDatabase = false;
-
-    protected $db;
-
-    public function setUp()
+    /**
+     * @return void
+     */
+    public function setUp(): void
     {
         parent::setUp();
 
-        if ($this->useDatabase === true) {
-            $this->setUpDatabase();
-
-            $this->db = new DatabaseManager($this->app, $this->app['db.factory']);
-            $this->db->connection('testbench');
-        }
+        $this->loadMigrationsFrom(__DIR__ . '/database/migrations');
     }
 
-    public function tearDown()
+    /**
+     * @param \Illuminate\Foundation\Application $app
+     * @return array<int, string>
+     */
+    protected function getPackageProviders($app): array
     {
-        if ($this->useDatabase === true) {
-            $this->db->disconnect('testbench');
-
-            $this->tearDownDatabase();
-        }
-
-        parent::tearDown();
+        return [
+            IdeHelperServiceProvider::class,
+            EloquentSerializedLobServiceProvider::class,
+        ];
     }
 
-    protected function setUpDatabase()
+    /**
+     * @param \Illuminate\Foundation\Application $app
+     * @return void
+     */
+    protected function getEnvironmentSetUp($app): void
     {
-        $this->artisan('migrate', [
-            '--database' => 'testbench',
-            '--realpath' => realpath(__DIR__.'/database/migrations'),
-        ]);
-    }
-
-    protected function tearDownDatabase()
-    {
-        $this->artisan('migrate:rollback');
-    }
-
-    protected function getEnvironmentSetUp($app)
-    {
-        $app['config']->set('database.default', 'testbench');
-        $app['config']->set('database.connections.testbench', [
-            'driver'    => 'mysql',
-            'host'      => 'localhost',
-            'database'  => 'eloquent_serialized_lob_test',
-            'username'  => 'root',
-            'password'  => '',
-            'charset'   => 'utf8',
-            'collation' => 'utf8_unicode_ci',
-            'prefix'    => '',
-            'strict'    => false,
+        $app->make('config')->set('database.default', 'ngmy_eloquent_serialized_lob');
+        $app->make('config')->set('database.connections.ngmy_eloquent_serialized_lob', [
+            'driver'   => 'sqlite',
+            'database' => ':memory:',
+            'prefix'   => '',
         ]);
     }
 }
