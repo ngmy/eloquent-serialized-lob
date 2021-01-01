@@ -20,7 +20,7 @@ Eloquent Serialized LOB has the following requirements:
 ## Installation
 
 1. Execute the Composer `require` command:
-   ```
+   ```console
    composer require ngmy/eloquent-serialized-lob
    ```
 2. If you don't use package discovery, add the service provider to the `providers` array in the `config/app.php` file:
