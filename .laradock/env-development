@@ -39,7 +39,7 @@ COMPOSE_PROJECT_NAME=laradock-eloquent-serialized-lob
 
 # Select a PHP version of the Workspace and PHP-FPM containers (Does not apply to HHVM).
 # Accepted values: 7.4 - 7.3 - 7.2 - 7.1 - 7.0 - 5.6
-PHP_VERSION=7.2
+PHP_VERSION=7.4
 
 ### Phalcon Version ###########################################
 
@@ -122,7 +122,7 @@ WORKSPACE_INSTALL_WORKSPACE_SSH=false
 WORKSPACE_INSTALL_SUBVERSION=false
 WORKSPACE_INSTALL_BZ2=false
 WORKSPACE_INSTALL_GMP=false
-WORKSPACE_INSTALL_XDEBUG=false
+WORKSPACE_INSTALL_XDEBUG=true
 WORKSPACE_INSTALL_PCOV=false
 WORKSPACE_INSTALL_PHPDBG=false
 WORKSPACE_INSTALL_SSH2=false
@@ -146,7 +146,7 @@ WORKSPACE_INSTALL_V8JS=false
 WORKSPACE_INSTALL_LARAVEL_ENVOY=false
 WORKSPACE_INSTALL_LARAVEL_INSTALLER=false
 WORKSPACE_INSTALL_DEPLOYER=false
-WORKSPACE_INSTALL_PRESTISSIMO=false
+WORKSPACE_INSTALL_PRESTISSIMO=true
 WORKSPACE_INSTALL_LINUXBREW=false
 WORKSPACE_INSTALL_MC=false
 WORKSPACE_INSTALL_SYMFONY=false
@@ -339,7 +339,7 @@ MYSQL_USER=default
 MYSQL_PASSWORD=secret
 MYSQL_PORT=3306
 MYSQL_ROOT_PASSWORD=root
-MYSQL_ENTRYPOINT_INITDB=./mysql/docker-entrypoint-initdb.d
+MYSQL_ENTRYPOINT_INITDB=../.laradock/mysql/docker-entrypoint-initdb.d
 
 ### CLICKHOUSE #################################################
 
