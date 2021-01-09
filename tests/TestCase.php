@@ -39,11 +39,6 @@ abstract class TestCase extends OrchestraTestCase
      */
     protected function getEnvironmentSetUp($app): void
     {
-        $app->make('config')->set('database.default', 'ngmy_eloquent_serialized_lob');
-        $app->make('config')->set('database.connections.ngmy_eloquent_serialized_lob', [
-            'driver'   => 'sqlite',
-            'database' => ':memory:',
-            'prefix'   => '',
-        ]);
+        $app->make('config')->set('database.default', 'mysql');
     }
 }

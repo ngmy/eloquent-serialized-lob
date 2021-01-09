@@ -5,7 +5,7 @@
 [![Latest Unstable Version](https://poser.pugx.org/ngmy/eloquent-serialized-lob/v/unstable)](https://packagist.org/packages/ngmy/eloquent-serialized-lob)
 [![License](https://poser.pugx.org/ngmy/eloquent-serialized-lob/license)](https://packagist.org/packages/ngmy/eloquent-serialized-lob)
 [![composer.lock](https://poser.pugx.org/ngmy/eloquent-serialized-lob/composerlock)](https://packagist.org/packages/ngmy/eloquent-serialized-lob)<br>
-[![Build Status](https://travis-ci.org/ngmy/eloquent-serialized-lob.svg?branch=master)](https://travis-ci.org/ngmy/eloquent-serialized-lob)
+[![PHP CI](https://github.com/ngmy/eloquent-serialized-lob/workflows/PHP%20CI/badge.svg)](https://github.com/ngmy/eloquent-serialized-lob/actions?query=workflow%3A%22PHP+CI%22)
 [![Coverage Status](https://coveralls.io/repos/ngmy/eloquent-serialized-lob/badge.svg?branch=master)](https://coveralls.io/r/ngmy/eloquent-serialized-lob?branch=master)
 
 Eloquent Serialized LOB is a trait for Laravel Eloquent models that allows [Serialized LOB pattern](http://martinfowler.com/eaaCatalog/serializedLOB.html).
@@ -14,8 +14,8 @@ Eloquent Serialized LOB is a trait for Laravel Eloquent models that allows [Seri
 
 Eloquent Serialized LOB has the following requirements:
 
-* PHP >= 7.2
-* Laravel >= 5.6
+* PHP >= 7.3
+* Laravel >= 6.0
 
 ## Installation
 
