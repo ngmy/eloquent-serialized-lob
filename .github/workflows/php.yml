@@ -5,7 +5,7 @@ on: [push, pull_request]
 jobs:
   install_tools:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     name: Install tools
 
@@ -13,26 +13,10 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v2
 
-      - name: Install PHIVE
-        uses: nick-invision/retry@v2
-        with:
-          timeout_minutes: 10
-          max_attempts: 3
-          command: |
-            wget -O phive.phar https://phar.io/releases/phive.phar
-            wget -O phive.phar.asc https://phar.io/releases/phive.phar.asc
-            gpg --keyserver pool.sks-keyservers.net --recv-keys 0x9D8A98B29B2D5D79
-            gpg --verify phive.phar.asc phive.phar
-
       - name: Install tools
-        uses: nick-invision/retry@v2
+        uses: ngmy/phive-install-action@master
         with:
-          timeout_minutes: 10
-          max_attempts: 3
-          command: |
-            php phive.phar --no-progress install \
-              --copy \
-              --trust-gpg-keys E82B2FB314E9906E,31C7E470E2138192,CF1A108D0E7AE720,4AA394086372C20A
+          phive-arguments: --force-accept-unsigned
 
       - name: Upload tools to artifact store
         uses: actions/upload-artifact@master
@@ -44,7 +28,7 @@ jobs:
 
     needs: install_tools
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     services:
       mysql:
@@ -81,7 +65,7 @@ jobs:
         run: sudo update-alternatives --set php /usr/bin/php${{ matrix.php }}
 
       - name: Update Composer to latest version
-        run: composer self-update
+        run: sudo composer self-update
 
       - name: Specify composer.json to use
         run: |
@@ -126,14 +110,19 @@ jobs:
           name: tools
           path: tools
 
+      - name: Set tools as an executable
+        run: find tools -type f -print0 | xargs -0 chmod +x
+
       - name: Change MySQL authentication method
         run: mysql -h 127.0.0.1 -u root -e "ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY ''"
 
       - name: Run lint
+        env:
+          PSALM_SHEPHERD: 1
+          # TODO: Remove it when psalm no longer tries to create a cache directory
+          #       https://github.com/vimeo/psalm/issues/4267
+          XDG_CACHE_HOME: /tmp
         run: composer lint
-
-      - name: Run bug analysis
-        run: composer findbugs
 
       - name: Run unit tests
         env:
