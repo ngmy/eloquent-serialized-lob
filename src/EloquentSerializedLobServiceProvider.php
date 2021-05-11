@@ -7,17 +7,13 @@ namespace Ngmy\EloquentSerializedLob;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Illuminate\Support\ServiceProvider;
 use JMS\Serializer\SerializerBuilder;
-use Ngmy\EloquentSerializedLob\Serializers\{
-    JsonSerializer,
-    XmlSerializer,
-};
+use Ngmy\EloquentSerializedLob\Serializers\JsonSerializer;
+use Ngmy\EloquentSerializedLob\Serializers\XmlSerializer;
 
 class EloquentSerializedLobServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
-     *
-     * @return void
      */
     public function boot(): void
     {
@@ -26,8 +22,6 @@ class EloquentSerializedLobServiceProvider extends ServiceProvider
 
     /**
      * Register the application services.
-     *
-     * @return void
      */
     public function register(): void
     {

@@ -6,20 +6,19 @@ namespace Ngmy\EloquentSerializedLob\Tests;
 
 use DB;
 use Illuminate\Testing\PendingCommand;
-use Ngmy\EloquentSerializedLob\Tests\SampleProjects\IssueDatabase\{
-    Entities\Bug,
-    Entities\FeatureRequest,
-    Models\Issue,
-};
-use Ngmy\EloquentSerializedLob\Tests\SampleProjects\OrganizationHierarchy\{
-    Entities\Department,
-    Models\Customer,
-};
+use Ngmy\EloquentSerializedLob\Tests\SampleProjects\IssueDatabase\Entities\Bug;
+use Ngmy\EloquentSerializedLob\Tests\SampleProjects\IssueDatabase\Entities\FeatureRequest;
+use Ngmy\EloquentSerializedLob\Tests\SampleProjects\IssueDatabase\Models\Issue;
+use Ngmy\EloquentSerializedLob\Tests\SampleProjects\OrganizationHierarchy\Entities\Department;
+use Ngmy\EloquentSerializedLob\Tests\SampleProjects\OrganizationHierarchy\Models\Customer;
+
+use function assert;
+use function is_array;
+use function is_null;
 
 class SerializedLobTraitTest extends TestCase
 {
     /**
-     * @return void
      * @doesNotPerformAssertions
      */
     public function testGenerateModelPhpDocComment(): void
@@ -37,9 +36,6 @@ class SerializedLobTraitTest extends TestCase
         $command->run();
     }
 
-    /**
-     * @return void
-     */
     public function testShouldSetSerializationOfAttributeWhenStoringGraphOfObjectsInOneTable(): void
     {
         $area = new Department();
@@ -86,9 +82,6 @@ EOF;
         $this->assertEquals($expectedDepartmentsXml, $createdCustomer->departments);
     }
 
-    /**
-     * @return void
-     */
     public function testShouldGetDeserializationOfAttributeWhenStoringGraphOfObjectsInOneTable(): void
     {
         $departmentsXml = <<<EOF
@@ -129,9 +122,6 @@ EOF;
         );
     }
 
-    /**
-     * @return void
-     */
     public function testShouldSetSerializationOfAttributeWhenStoringSubtypesOfObjectInOneTable(): void
     {
         // issue_type is 'bug'.
@@ -191,9 +181,6 @@ EOF;
         $this->assertEquals('{"sponsor":"Sponsor"}', $createdIssueTypeFeature->attributes);
     }
 
-    /**
-     * @return void
-     */
     public function testShouldGetDeserializationOfAttributeWhenStoringSubtypesOfObjectInOneTable(): void
     {
         // issue_type is 'bug'.

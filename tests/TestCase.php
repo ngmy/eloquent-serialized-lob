@@ -5,15 +5,11 @@ declare(strict_types=1);
 namespace Ngmy\EloquentSerializedLob\Tests;
 
 use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
-use Illuminate\Database\DatabaseManager;
 use Ngmy\EloquentSerializedLob\EloquentSerializedLobServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
 abstract class TestCase extends OrchestraTestCase
 {
-    /**
-     * @return void
-     */
     public function setUp(): void
     {
         parent::setUp();
@@ -35,7 +31,6 @@ abstract class TestCase extends OrchestraTestCase
 
     /**
      * @param \Illuminate\Foundation\Application $app
-     * @return void
      */
     protected function getEnvironmentSetUp($app): void
     {

@@ -39,18 +39,9 @@ trait SerializedLobTrait
         }
     }
 
-    /**
-     * @return string
-     */
     abstract protected function getSerializationColumn(): string;
 
-    /**
-     * @return string
-     */
     abstract protected function getSerializationType(): string;
 
-    /**
-     * @return string
-     */
     abstract protected function getDeserializationType(): string;
 }

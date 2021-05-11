@@ -7,15 +7,12 @@ namespace Ngmy\EloquentSerializedLob\Serializers;
 interface SerializerInterface
 {
     /**
-     * @param object|array<mixed> $value
-     * @return string
+     * @param array<mixed>|object $value
      */
     public function serialize($value): string;
 
     /**
-     * @param string $value
-     * @param string $type
-     * @return object|array<mixed>
+     * @return array<mixed>|object
      */
     public function deserialize(string $value, string $type);
 }

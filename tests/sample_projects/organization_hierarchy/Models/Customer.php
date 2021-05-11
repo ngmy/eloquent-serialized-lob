@@ -5,13 +5,10 @@ declare(strict_types=1);
 namespace Ngmy\EloquentSerializedLob\Tests\SampleProjects\OrganizationHierarchy\Models;
 
 use Eloquent;
-use Illuminate\Database\Eloquent\{
-    Builder,
-    Model,
-};
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Ngmy\EloquentSerializedLob\SerializedLobTrait;
-use Ngmy\EloquentSerializedLob\Serializer\XmlSerializer;
 use Ngmy\EloquentSerializedLob\Tests\SampleProjects\OrganizationHierarchy\Entities\Department;
 
 /**

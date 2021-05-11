@@ -12,7 +12,6 @@ class JsonSerializer implements SerializerInterface
     protected $serializer;
 
     /**
-     * @param JmsSerializerInterface $serializer
      * @return void
      */
     public function __construct(JmsSerializerInterface $serializer)
@@ -21,8 +20,7 @@ class JsonSerializer implements SerializerInterface
     }
 
     /**
-     * @param object|array<mixed> $value
-     * @return string
+     * @param array<mixed>|object $value
      */
     public function serialize($value): string
     {
@@ -31,9 +29,8 @@ class JsonSerializer implements SerializerInterface
 
     /**
      * @template T
-     * @param string          $value
      * @param class-string<T> $type
-     * @return object|array<mixed>
+     * @return array<mixed>|object
      */
     public function deserialize(string $value, string $type)
     {

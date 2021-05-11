@@ -7,15 +7,17 @@ namespace Ngmy\EloquentSerializedLob\Serializers;
 use BadMethodCallException;
 use InvalidArgumentException;
 
+use function class_exists;
+use function get_class;
+use function strtolower;
+
+use const PHP_EOL;
+
 class SerializerFactory
 {
     /** @var array<string, SerializerInterface> */
     private static $cache = [];
 
-    /**
-     * @param string $type
-     * @return SerializerInterface
-     */
     public static function get(string $type): SerializerInterface
     {
         if (empty(self::$cache[$type])) {
@@ -26,8 +28,6 @@ class SerializerFactory
     }
 
     /**
-     * @param string $type
-     * @return SerializerInterface
      * @throws InvalidArgumentException
      */
     public static function make(string $type): SerializerInterface
@@ -54,8 +54,8 @@ class SerializerFactory
     }
 
     /**
-     * @return void
      * @throws BadMethodCallException
+     * @return void
      */
     public function __clone()
     {
@@ -67,7 +67,6 @@ class SerializerFactory
     }
 
     /**
-     * @return void
      * @throws BadMethodCallException
      */
     public function __wakeup(): void

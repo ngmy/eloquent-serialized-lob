@@ -10,9 +10,6 @@ use Ngmy\EloquentSerializedLob\Tests\TestCase;
 
 class XmlSerializerTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function testShouldSerializeGivenObjectToXmlFormattedString(): void
     {
         $inputBug = new Bug();
@@ -34,9 +31,6 @@ EOF;
         $this->assertEquals($expectedBugXml, $actualBugXml);
     }
 
-    /**
-     * @return void
-     */
     public function testShouldDeserializeGivenXmlFormattedStringToObject(): void
     {
         $inputBugXml = <<<EOF

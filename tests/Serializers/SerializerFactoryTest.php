@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace Ngmy\EloquentSerializedLob\Tests\Serializers;
 
 use InvalidArgumentException;
-use Ngmy\EloquentSerializedLob\Serializers\{
-    JsonSerializer,
-    SerializerFactory,
-    XmlSerializer,
-};
+use Ngmy\EloquentSerializedLob\Serializers\JsonSerializer;
+use Ngmy\EloquentSerializedLob\Serializers\SerializerFactory;
+use Ngmy\EloquentSerializedLob\Serializers\XmlSerializer;
 use Ngmy\EloquentSerializedLob\Tests\TestCase;
 use stdClass;
 
@@ -38,9 +36,7 @@ class SerializerFactoryTest extends TestCase
 
     /**
      * @template ExpectedType of object
-     * @param string                     $type
      * @param class-string<ExpectedType> $expected
-     * @return void
      * @dataProvider providerMake
      */
     public function testMake(string $type, string $expected): void
@@ -50,9 +46,6 @@ class SerializerFactoryTest extends TestCase
         $this->assertInstanceOf($expected, $serializer);
     }
 
-    /**
-     * @return void
-     */
     public function testMakeThrowsAnExceptionWhenAClassNameThatDoesNotImplementTheSerializerInterfaceIsSpecified(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -60,9 +53,6 @@ class SerializerFactoryTest extends TestCase
         $serializer = SerializerFactory::make(stdClass::class);
     }
 
-    /**
-     * @return void
-     */
     public function testMakeThrowsAnExceptionWhenAnInvalidTypeIsSpecified(): void
     {
         $this->expectException(InvalidArgumentException::class);

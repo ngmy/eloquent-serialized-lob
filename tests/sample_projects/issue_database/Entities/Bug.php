@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Ngmy\EloquentSerializedLob\Tests\SampleProjects\IssueDatabase\Entities;
 
-use JMS\Serializer\Annotation\{
-    Accessor,
-    SerializedName,
-    Type,
-};
+use JMS\Serializer\Annotation\Accessor;
+use JMS\Serializer\Annotation\SerializedName;
+use JMS\Serializer\Annotation\Type;
 
 class Bug
 {
@@ -26,35 +24,21 @@ class Bug
      */
     private $versionAffected;
 
-    /**
-     * @return string
-     */
     public function getSeverity(): string
     {
         return $this->severity;
     }
 
-    /**
-     * @return string
-     */
     public function getVersionAffected(): string
     {
         return $this->versionAffected;
     }
 
-    /**
-     * @param string $severity
-     * @return void
-     */
     public function setSeverity(string $severity): void
     {
         $this->severity = $severity;
     }
 
-    /**
-     * @param string $versionAffected
-     * @return void
-     */
     public function setVersionAffected(string $versionAffected): void
     {
         $this->versionAffected = $versionAffected;
