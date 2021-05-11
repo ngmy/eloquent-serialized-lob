@@ -10,9 +10,6 @@ use Ngmy\EloquentSerializedLob\Tests\TestCase;
 
 class JsonSerializerTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function testShouldSerializeGivenObjectToJsonFormattedString(): void
     {
         $inputBug = new Bug();
@@ -29,9 +26,6 @@ EOF;
         $this->assertEquals($expectedBugJson, $actualBugJson);
     }
 
-    /**
-     * @return void
-     */
     public function testShouldDeserializeGivenJsonFormattedStringToObject(): void
     {
         $inputBugJson = <<<EOF

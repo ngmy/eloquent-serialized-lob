@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Ngmy\EloquentSerializedLob\Tests\SampleProjects\IssueDatabase\Entities;
 
-use JMS\Serializer\Annotation\{
-    Accessor,
-    Type,
-};
+use JMS\Serializer\Annotation\Accessor;
+use JMS\Serializer\Annotation\Type;
 
 class FeatureRequest
 {
@@ -18,18 +16,11 @@ class FeatureRequest
      */
     private $sponsor;
 
-    /**
-     * @return string
-     */
     public function getSponsor(): string
     {
         return $this->sponsor;
     }
 
-    /**
-     * @param string $sponsor
-     * @return void
-     */
     public function setSponsor(string $sponsor): void
     {
         $this->sponsor = $sponsor;

@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace Ngmy\EloquentSerializedLob\Tests\Serializers;
 
 use InvalidArgumentException;
-use Ngmy\EloquentSerializedLob\Serializers\{
-    JsonSerializer,
-    SerializerFactory,
-    XmlSerializer,
-};
+use Ngmy\EloquentSerializedLob\Serializers\JsonSerializer;
+use Ngmy\EloquentSerializedLob\Serializers\SerializerFactory;
+use Ngmy\EloquentSerializedLob\Serializers\SerializerInterface;
+use Ngmy\EloquentSerializedLob\Serializers\XmlSerializer;
 use Ngmy\EloquentSerializedLob\Tests\TestCase;
 use stdClass;
 
@@ -37,11 +36,13 @@ class SerializerFactoryTest extends TestCase
     }
 
     /**
-     * @template ExpectedType of object
-     * @param string                     $type
-     * @param class-string<ExpectedType> $expected
-     * @return void
      * @dataProvider providerMake
+     *
+     * @phpstan-param 'json'|'xml'|class-string<SerializerInterface> $type
+     * @phpstan-param class-string<SerializerInterface> $expected
+     *
+     * @psalm-param 'json'|'xml'|class-string<SerializerInterface> $type
+     * @psalm-param class-string<SerializerInterface> $expected
      */
     public function testMake(string $type, string $expected): void
     {
@@ -50,23 +51,21 @@ class SerializerFactoryTest extends TestCase
         $this->assertInstanceOf($expected, $serializer);
     }
 
-    /**
-     * @return void
-     */
     public function testMakeThrowsAnExceptionWhenAClassNameThatDoesNotImplementTheSerializerInterfaceIsSpecified(): void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $serializer = SerializerFactory::make(stdClass::class);
+        // NOTE: To test that an exception is thrown
+        // @phpstan-ignore-next-line
+        SerializerFactory::make(stdClass::class);
     }
 
-    /**
-     * @return void
-     */
     public function testMakeThrowsAnExceptionWhenAnInvalidTypeIsSpecified(): void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $serializer = SerializerFactory::make('invalid');
+        // NOTE: To test that an exception is thrown
+        // @phpstan-ignore-next-line
+        SerializerFactory::make('invalid');
     }
 }

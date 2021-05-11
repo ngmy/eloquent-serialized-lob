@@ -7,15 +7,20 @@ namespace Ngmy\EloquentSerializedLob\Serializers;
 interface SerializerInterface
 {
     /**
-     * @param object|array<mixed> $value
-     * @return string
+     * @param array<mixed>|object $value
      */
     public function serialize($value): string;
 
     /**
-     * @param string $value
-     * @param string $type
-     * @return object|array<mixed>
+     * @return mixed
+     *
+     * @phpstan-template T
+     * @phpstan-param class-string<T> $type
+     * @phpstan-return T
+     *
+     * @psalm-template T
+     * @psalm-param class-string<T> $type
+     * @psalm-return T
      */
     public function deserialize(string $value, string $type);
 }

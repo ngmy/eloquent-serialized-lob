@@ -4,18 +4,14 @@ declare(strict_types=1);
 
 namespace Ngmy\EloquentSerializedLob\Tests\SampleProjects\IssueDatabase\Models;
 
+use ArrayIterator;
 use Eloquent;
-use Illuminate\Database\Eloquent\{
-    Builder,
-    Model,
-};
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Ngmy\EloquentSerializedLob\SerializedLobTrait;
-use Ngmy\EloquentSerializedLob\Serializer\JsonSerializer;
-use Ngmy\EloquentSerializedLob\Tests\SampleProjects\IssueDatabase\Entities\{
-    Bug,
-    FeatureRequest,
-};
+use Ngmy\EloquentSerializedLob\Tests\SampleProjects\IssueDatabase\Entities\Bug;
+use Ngmy\EloquentSerializedLob\Tests\SampleProjects\IssueDatabase\Entities\FeatureRequest;
 
 /**
  * Ngmy\EloquentSerializedLob\Tests\SampleProjects\IssueDatabase\Models\Issue
@@ -27,7 +23,7 @@ use Ngmy\EloquentSerializedLob\Tests\SampleProjects\IssueDatabase\Entities\{
  * @property string|null $version_resolved
  * @property string|null $status
  * @property string|null $issue_type
- * @property Bug|FeatureRequest|array $attributes
+ * @property array|Bug|FeatureRequest $attributes
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @method static Builder|Issue newModelQuery()
@@ -65,11 +61,21 @@ class Issue extends Model
         return 'attributes';
     }
 
+    /**
+     * @phpstan-return 'json'
+     *
+     * @psalm-return 'json'
+     */
     protected function getSerializationType(): string
     {
         return 'json';
     }
 
+    /**
+     * @phpstan-return class-string<ArrayIterator>|class-string<Bug>|class-string<FeatureRequest>
+     *
+     * @psalm-return class-string<ArrayIterator>|class-string<Bug>|class-string<FeatureRequest>
+     */
     protected function getDeserializationType(): string
     {
         if ($this->issue_type == 'bug') {
@@ -78,7 +84,7 @@ class Issue extends Model
             return FeatureRequest::class;
         } else {
             // Guard for null or unexpected value.
-            return 'array';
+            return ArrayIterator::class;
         }
     }
 }

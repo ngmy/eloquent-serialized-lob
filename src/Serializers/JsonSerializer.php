@@ -11,18 +11,13 @@ class JsonSerializer implements SerializerInterface
     /** @var JmsSerializerInterface */
     protected $serializer;
 
-    /**
-     * @param JmsSerializerInterface $serializer
-     * @return void
-     */
     public function __construct(JmsSerializerInterface $serializer)
     {
         $this->serializer = $serializer;
     }
 
     /**
-     * @param object|array<mixed> $value
-     * @return string
+     * @param array<mixed>|object $value
      */
     public function serialize($value): string
     {
@@ -30,10 +25,15 @@ class JsonSerializer implements SerializerInterface
     }
 
     /**
-     * @template T
-     * @param string          $value
-     * @param class-string<T> $type
-     * @return object|array<mixed>
+     * @return mixed
+     *
+     * @phpstan-template T
+     * @phpstan-param class-string<T> $type
+     * @phpstan-return T
+     *
+     * @psalm-template T
+     * @psalm-param class-string<T> $type
+     * @psalm-return T
      */
     public function deserialize(string $value, string $type)
     {

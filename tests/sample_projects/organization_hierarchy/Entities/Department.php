@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Ngmy\EloquentSerializedLob\Tests\SampleProjects\OrganizationHierarchy\Entities;
 
-use JMS\Serializer\Annotation\{
-    Accessor,
-    Type,
-};
+use JMS\Serializer\Annotation\Accessor;
+use JMS\Serializer\Annotation\Type;
+
+use function is_null;
 
 class Department
 {
@@ -24,9 +24,6 @@ class Department
      */
     private $subsidiaries;
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
@@ -40,10 +37,6 @@ class Department
         return $this->subsidiaries;
     }
 
-    /**
-     * @param string $name
-     * @return void
-     */
     public function setName(string $name): void
     {
         $this->name = $name;
@@ -51,17 +44,12 @@ class Department
 
     /**
      * @param array<Department> $subsidiaries
-     * @return void
      */
     public function setSubsidiaries(array $subsidiaries): void
     {
         $this->subsidiaries = $subsidiaries;
     }
 
-    /**
-     * @param Department $subsidiary
-     * @return void
-     */
     public function addSubsidiary(Department $subsidiary): void
     {
         if (is_null($this->subsidiaries)) {
