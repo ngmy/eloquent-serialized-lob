@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ngmy\EloquentSerializedLob\Tests;
 
+use ArrayIterator;
 use DB;
 use Illuminate\Testing\PendingCommand;
 use Ngmy\EloquentSerializedLob\Tests\SampleProjects\IssueDatabase\Entities\Bug;
@@ -13,7 +14,6 @@ use Ngmy\EloquentSerializedLob\Tests\SampleProjects\OrganizationHierarchy\Entiti
 use Ngmy\EloquentSerializedLob\Tests\SampleProjects\OrganizationHierarchy\Models\Customer;
 
 use function assert;
-use function is_array;
 use function is_null;
 
 class SerializedLobTraitTest extends TestCase
@@ -236,10 +236,15 @@ EOF;
         assert(!is_null($readIssueTypeFeature));
         assert(!is_null($readIssueTypeUnexpected));
         assert(!is_null($readIssueTypeNull));
-        assert($readIssueTypeBug->attributes instanceof Bug);
-        assert($readIssueTypeFeature->attributes instanceof FeatureRequest);
-        assert(is_array($readIssueTypeUnexpected->attributes));
-        assert(is_array($readIssueTypeNull->attributes));
+
+        /** @psalm-var Bug */
+        $readIssueTypeBugAttributes = $readIssueTypeBug->attributes;
+        /** @psalm-var FeatureRequest */
+        $readIssueTypeFeatureAttributes = $readIssueTypeFeature->attributes;
+        /** @psalm-var ArrayIterator */
+        $readIssueTypeUnexpectedAttributes = $readIssueTypeUnexpected->attributes;
+        /** @psalm-var ArrayIterator */
+        $readIssueTypeNullAttributes = $readIssueTypeNull->attributes;
 
         $this->assertEquals(1, $readIssueTypeBug->reported_by);
         $this->assertEquals(1, $readIssueTypeBug->product_id);
@@ -247,8 +252,8 @@ EOF;
         $this->assertEquals(null, $readIssueTypeBug->version_resolved);
         $this->assertEquals('new', $readIssueTypeBug->status);
         $this->assertEquals('bug', $readIssueTypeBug->issue_type);
-        $this->assertEquals('loss of functionality', $readIssueTypeBug->attributes->getSeverity());
-        $this->assertEquals('1.0', $readIssueTypeBug->attributes->getVersionAffected());
+        $this->assertEquals('loss of functionality', $readIssueTypeBugAttributes->getSeverity());
+        $this->assertEquals('1.0', $readIssueTypeBugAttributes->getVersionAffected());
 
         $this->assertEquals(1, $readIssueTypeFeature->reported_by);
         $this->assertEquals(1, $readIssueTypeFeature->product_id);
@@ -256,7 +261,7 @@ EOF;
         $this->assertEquals(null, $readIssueTypeFeature->version_resolved);
         $this->assertEquals('new', $readIssueTypeFeature->status);
         $this->assertEquals('feature', $readIssueTypeFeature->issue_type);
-        $this->assertEquals('Sponsor', $readIssueTypeFeature->attributes->getSponsor());
+        $this->assertEquals('Sponsor', $readIssueTypeFeatureAttributes->getSponsor());
 
         $this->assertEquals(1, $readIssueTypeUnexpected->reported_by);
         $this->assertEquals(1, $readIssueTypeUnexpected->product_id);
@@ -264,7 +269,7 @@ EOF;
         $this->assertEquals(null, $readIssueTypeUnexpected->version_resolved);
         $this->assertEquals('new', $readIssueTypeUnexpected->status);
         $this->assertEquals('unexpected', $readIssueTypeUnexpected->issue_type);
-        $this->assertEquals('value', $readIssueTypeUnexpected->attributes['key']);
+        $this->assertEquals('value', $readIssueTypeUnexpectedAttributes['key']);
 
         $this->assertEquals(1, $readIssueTypeNull->reported_by);
         $this->assertEquals(1, $readIssueTypeNull->product_id);
@@ -272,6 +277,6 @@ EOF;
         $this->assertEquals(null, $readIssueTypeNull->version_resolved);
         $this->assertEquals('new', $readIssueTypeNull->status);
         $this->assertEquals(null, $readIssueTypeNull->issue_type);
-        $this->assertEquals('value', $readIssueTypeNull->attributes['key']);
+        $this->assertEquals('value', $readIssueTypeNullAttributes['key']);
     }
 }

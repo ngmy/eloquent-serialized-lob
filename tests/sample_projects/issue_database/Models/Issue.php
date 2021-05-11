@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ngmy\EloquentSerializedLob\Tests\SampleProjects\IssueDatabase\Models;
 
+use ArrayIterator;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -60,11 +61,21 @@ class Issue extends Model
         return 'attributes';
     }
 
+    /**
+     * @phpstan-return 'json'
+     *
+     * @psalm-return 'json'
+     */
     protected function getSerializationType(): string
     {
         return 'json';
     }
 
+    /**
+     * @phpstan-return class-string<ArrayIterator>|class-string<Bug>|class-string<FeatureRequest>
+     *
+     * @psalm-return class-string<ArrayIterator>|class-string<Bug>|class-string<FeatureRequest>
+     */
     protected function getDeserializationType(): string
     {
         if ($this->issue_type == 'bug') {
@@ -73,7 +84,7 @@ class Issue extends Model
             return FeatureRequest::class;
         } else {
             // Guard for null or unexpected value.
-            return 'array';
+            return ArrayIterator::class;
         }
     }
 }

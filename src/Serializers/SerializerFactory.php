@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ngmy\EloquentSerializedLob\Serializers;
 
 use BadMethodCallException;
+use Illuminate\Contracts\Foundation\Application;
 use InvalidArgumentException;
 
 use function class_exists;
@@ -18,32 +19,68 @@ class SerializerFactory
     /** @var array<string, SerializerInterface> */
     private static $cache = [];
 
+    /**
+     * @throws InvalidArgumentException
+     *
+     * @phpstan-param 'json'|'xml'|class-string<SerializerInterface> $type
+     *
+     * @psalm-template TSerializer of SerializerInterface
+     * @psalm-template TType of string|class-string<TSerializer>
+     * @psalm-param TType $type
+     * @psalm-return (
+     *      TType is 'json'
+     *          ? JsonSerializer
+     *          : (TType is 'xml' ? XmlSerializer : TSerializer)
+     * )
+     */
     public static function get(string $type): SerializerInterface
     {
         if (empty(self::$cache[$type])) {
             self::$cache[$type] = self::make($type);
         }
 
+        /**
+         * @psalm-var (
+         *      TType is 'json'
+         *          ? JsonSerializer
+         *          : (TType is 'xml' ? XmlSerializer : TSerializer)
+         */
         return self::$cache[$type];
     }
 
     /**
      * @throws InvalidArgumentException
+     *
+     * @phpstan-param 'json'|'xml'|class-string<SerializerInterface> $type
+     *
+     * @psalm-template TSerializer of SerializerInterface
+     * @psalm-template TType of string|class-string<TSerializer>
+     * @psalm-param TType $type
+     * @psalm-return (
+     *      TType is 'json'
+     *          ? JsonSerializer
+     *          : (TType is 'xml' ? XmlSerializer : TSerializer)
+     * )
      */
     public static function make(string $type): SerializerInterface
     {
+        /** @psalm-var Application */
+        $app = app();
         if (strtolower($type) == 'json') {
-            return app()->make(JsonSerializer::class);
+            /** @psalm-var JsonSerializer */
+            return $app->make(JsonSerializer::class);
         } elseif (strtolower($type) == 'xml') {
-            return app()->make(XmlSerializer::class);
+            /** @psalm-var XmlSerializer */
+            return $app->make(XmlSerializer::class);
         } elseif (class_exists($type)) {
-            $serializer = app()->make($type);
+            $serializer = $app->make($type);
             if (!$serializer instanceof SerializerInterface) {
                 throw new InvalidArgumentException(
                     'Serializer class must implement the ' . SerializerInterface::class . ' interface.' . PHP_EOL .
                     'type: ' . $type
                 );
             }
+            /** @psalm-var TSerializer */
             return $serializer;
         }
 
@@ -79,9 +116,6 @@ class SerializerFactory
         );
     }
 
-    /**
-     * @return void
-     */
     private function __construct()
     {
     }

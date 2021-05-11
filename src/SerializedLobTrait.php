@@ -26,8 +26,8 @@ trait SerializedLobTrait
     /**
      * @param string $key
      * @param mixed  $value
-     * @see \Illuminate\Database\Eloquent\Concerns\HasAttributes::getAttribute()
      * @return $this
+     * @see \Illuminate\Database\Eloquent\Concerns\HasAttributes::getAttribute()
      */
     public function setAttribute($key, $value)
     {
@@ -41,7 +41,17 @@ trait SerializedLobTrait
 
     abstract protected function getSerializationColumn(): string;
 
+    /**
+     * @phpstan-return 'json'|'xml'|class-string<SerializerInterface>
+     *
+     * @psalm-return 'json'|'xml'|class-string<SerializerInterface>
+     */
     abstract protected function getSerializationType(): string;
 
+    /**
+     * @phpstan-return class-string
+     *
+     * @psalm-return class-string
+     */
     abstract protected function getDeserializationType(): string;
 }

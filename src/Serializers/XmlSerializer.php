@@ -11,9 +11,6 @@ class XmlSerializer implements SerializerInterface
     /** @var JmsSerializerInterface */
     protected $serializer;
 
-    /**
-     * @return void
-     */
     public function __construct(JmsSerializerInterface $serializer)
     {
         $this->serializer = $serializer;
@@ -28,9 +25,15 @@ class XmlSerializer implements SerializerInterface
     }
 
     /**
-     * @template T
-     * @param class-string<T> $type
-     * @return array<mixed>|object
+     * @return mixed
+     *
+     * @phpstan-template T
+     * @phpstan-param class-string<T> $type
+     * @phpstan-return T
+     *
+     * @psalm-template T
+     * @psalm-param class-string<T> $type
+     * @psalm-return T
      */
     public function deserialize(string $value, string $type)
     {

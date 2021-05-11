@@ -12,7 +12,15 @@ interface SerializerInterface
     public function serialize($value): string;
 
     /**
-     * @return array<mixed>|object
+     * @return mixed
+     *
+     * @phpstan-template T
+     * @phpstan-param class-string<T> $type
+     * @phpstan-return T
+     *
+     * @psalm-template T
+     * @psalm-param class-string<T> $type
+     * @psalm-return T
      */
     public function deserialize(string $value, string $type);
 }

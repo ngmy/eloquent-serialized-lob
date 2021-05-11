@@ -44,11 +44,21 @@ class Customer extends Model
         return 'departments';
     }
 
+    /**
+     * @phpstan-return 'xml'
+     *
+     * @psalm-return 'xml'
+     */
     protected function getSerializationType(): string
     {
         return 'xml';
     }
 
+    /**
+     * @phpstan-return class-string<Department>
+     *
+     * @psalm-return class-string<Department>
+     */
     protected function getDeserializationType(): string
     {
         return Department::class;

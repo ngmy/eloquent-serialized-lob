@@ -17,6 +17,8 @@ class EloquentSerializedLobServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // TODO: This will no longer be necessary in doctrine/annotations 2.0
+        /** @psalm-suppress DeprecatedMethod */
         AnnotationRegistry::registerLoader('class_exists');
     }
 
