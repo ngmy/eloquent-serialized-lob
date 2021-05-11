@@ -57,13 +57,44 @@
     "prefer-stable": true,
     "scripts": {
         "test": [
-            "@php tools/phpunit --colors=always"
+            "@phpunit"
         ],
         "lint": [
-            "@php tools/phpcs --colors"
+            "@phpcs",
+            "@phpstan",
+            "@psalm"
         ],
-        "findbugs": [
-            "@php tools/phpstan analyse --ansi"
+        "fmt": [
+            "@php-cs-fixer",
+            "@phpcbf"
+        ],
+        "doc": [
+            "@phpdoc"
+        ],
+        "phar-extractor": [
+            "rm -rf tools-src",
+            "tools/phar-extractor extract-phive-xml -t tools-src"
+        ],
+        "php-cs-fixer": [
+            "tools/php-cs-fixer fix --ansi"
+        ],
+        "phpcbf": [
+            "tools/phpcbf"
+        ],
+        "phpcs": [
+            "tools/phpcs"
+        ],
+        "phpdoc": [
+            "tools/phpDocumentor --force"
+        ],
+        "phpstan": [
+            "tools/phpstan analyse --ansi"
+        ],
+        "phpunit": [
+            "tools/phpunit --colors=always"
+        ],
+        "psalm": [
+            "if [ \"${PSALM_SHEPHERD:-0}\" = '0' ]; then tools/psalm --no-cache; else tools/psalm --no-cache --shepherd; fi"
         ]
     }
 }
